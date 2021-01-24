@@ -4,6 +4,7 @@
 
 body {
     padding: 0;
+    display: flex;
 }
 
 #projects-panel {
@@ -17,15 +18,19 @@ body {
     cursor: pointer;
 }
 
-.new-project-form {
+#new-project-form, #new-todo-form {
     display: flex;
 }
 
-.project-name {
+#project-name {
     font-size: 20px;
 }
 
-.create-project-button {
+#add-project-btn, #add-todo-btn {
     height: 40px;
     width: 40px;
+}
+
+#list-panel {
+    border: 1px solid red;
 }
