@@ -4,14 +4,9 @@
 
 body {
     padding: 0;
+    margin: 0;
     display: flex;
-}
-
-#projects-panel {
-    width: 20%;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid blue;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 #projects-list p:hover {
@@ -22,15 +17,138 @@ body {
     display: flex;
 }
 
-#project-name {
-    font-size: 20px;
+
+#add-project-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    color: #3e69e4;
 }
 
-#add-project-btn, #add-todo-btn {
-    height: 40px;
-    width: 40px;
+#add-project-btn:focus {
+    outline: none;
+}
+
+#add-project-btn:hover {
+    cursor: pointer;
+}
+
+#new-project-name {
+    background: none;
+    border: none;
+    color: #3e69e4;
+}
+
+#new-project-name:focus {
+    outline: none;
+}
+
+#new-project-name::placeholder {
+    color: #3e69e4;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+}
+
+.add-todo-btn {
+    width: 20px;
+    font-size: 16px;
+    border: none;
+    background: none;
+    color: #3e69e4;
+    background-image: url(assets/plus.svg);
+    background-size: 15px;
+    background-position: 5% 50%;
+    background-repeat: no-repeat;
+}
+
+#add-todo-btn:focus {
+    outline: none;
+}
+
+#focused-todo-btn {
+    background-image: url(assets/empty-check.png);
+}
+
+#add-todo-btn:hover {
+    cursor: pointer;
+}
+
+
+#new-todo-name {
+    background: none;
+    border: none;
+    color: #3e69e4;
+}
+
+#new-todo-name:focus {
+    outline: none;
 }
 
 #list-panel {
-    border: 1px solid red;
+    padding-top: 30px;
+    padding-left: 20px;
+}
+
+#detail-name {
+    font-size: 1.4em;
+    font-weight: bold;
+}
+
+.invisible {
+    display: none;
+}
+
+.title {
+    color: #3e69e4;
+    font-size: 1.25em;
+}
+
+#projects-panel {
+    padding-top: 70px;
+    background: #eeeeee;
+    width: 15%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #cccccc;
+}
+
+.project-list-item {
+    font-size: 14px;
+    padding: 10px 15px;
+    padding-left: 38px;
+    background-image: url(assets/task.svg);
+    background-repeat: no-repeat;
+    background-size: 16px;
+    background-position: 5% 50%;
+}
+
+.selected {
+    background-color: #dddddd;
+    color: #3e69e4;
+}
+
+#my-day {
+    background-image: url(assets/sun.svg) !important;
+    background-repeat: no-repeat; 
+    background-size: 16px;
+}
+
+#important {
+    background-image: url(assets/star.svg) !important;
+    background-repeat: no-repeat;
+    background-size: 16px;
+}
+
+#planned {
+    background-image: url(assets/calendar.svg) !important;
+    background-repeat: no-repeat;
+    background-size: 16px;
+}
+
+#tasks {
+    background-image: url(assets/home.svg) !important;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    margin-bottom: 32px;
 }
