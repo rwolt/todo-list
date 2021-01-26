@@ -18,35 +18,59 @@ body {
 }
 
 
-#add-project-btn {
+.add-project-btn {
     width: 36px;
     height: 36px;
     border: none;
-    color: #3e69e4;
+    background: none; 
+    background-image: url(assets/plus-blue.png);
+    background-repeat: no-repeat;
+    background-size: 18px;
+    background-position: center;
 }
 
-#add-project-btn:focus {
+.add-project-btn:focus {
     outline: none;
 }
 
-#add-project-btn:hover {
+.add-project-btn:hover {
     cursor: pointer;
 }
 
-#new-project-name {
+#focused-proj-btn {
+    background-image: url(assets/plus-gray.png);
+}
+
+#focused-proj-name {
+    color: #767678;
+}
+
+#focused-proj.name::placeholder {
+    color: #767678;
+}
+
+.new-project-name {
     background: none;
     border: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
     color: #3e69e4;
 }
 
-#new-project-name:focus {
+.new-project-name:focus {
     outline: none;
+    color: #767678;
 }
 
-#new-project-name::placeholder {
+.new-project-name:focus::placeholder {
+    color: #767678;
+}
+
+.new-project-name::placeholder {
     color: #3e69e4;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 14px;
+    font-size: 16px;
+
 }
 
 .add-todo-btn {
@@ -61,15 +85,16 @@ body {
     background-repeat: no-repeat;
 }
 
-#add-todo-btn:focus {
+.add-todo-btn:focus {
     outline: none;
 }
+
 
 #focused-todo-btn {
     background-image: url(assets/empty-check.png);
 }
 
-#add-todo-btn:hover {
+.add-todo-btn:hover {
     cursor: pointer;
 }
 
@@ -100,12 +125,12 @@ body {
 
 .title {
     color: #3e69e4;
-    font-size: 1.25em;
+    font-size: 22px;
 }
 
 #projects-panel {
     padding-top: 70px;
-    background: #eeeeee;
+    background: #eee;
     width: 15%;
     height: 100vh;
     display: flex;
@@ -114,41 +139,51 @@ body {
 }
 
 .project-list-item {
-    font-size: 14px;
-    padding: 10px 15px;
-    padding-left: 38px;
-    background-image: url(assets/task.svg);
+    font-size: 16px;
+    padding: 20px 15px;
+    padding-left: 40px;
+    background-image: url(assets/task-blue.png);
     background-repeat: no-repeat;
     background-size: 16px;
     background-position: 5% 50%;
+    margin: 0;
+}
+
+.project-list-item:hover {
+    background-color: #f8f7f7;
+}
+
+#new-project-form:hover {
+    background-color: #f8f7f7;
 }
 
 .selected {
-    background-color: #dddddd;
+    background-color: #dddddd !important;
     color: #3e69e4;
+    font-weight: bold;
 }
 
 #my-day {
-    background-image: url(assets/sun.svg) !important;
+    background-image: url(assets/sun-gray.png) !important;
     background-repeat: no-repeat; 
-    background-size: 16px;
+    background-size: 18px;
 }
 
 #important {
-    background-image: url(assets/star.svg) !important;
+    background-image: url(assets/star-gray.png) !important;
     background-repeat: no-repeat;
-    background-size: 16px;
+    background-size: 18px;
 }
 
 #planned {
-    background-image: url(assets/calendar.svg) !important;
+    background-image: url(assets/calendar-gray.png) !important;
     background-repeat: no-repeat;
-    background-size: 16px;
+    background-size: 18px;
 }
 
 #tasks {
-    background-image: url(assets/home.svg) !important;
+    background-image: url(assets/home-blue.png) !important;
     background-repeat: no-repeat;
-    background-size: 16px;
-    margin-bottom: 32px;
+    background-size: 18px;
+    margin-bottom: 40px;
 }
