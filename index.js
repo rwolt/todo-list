@@ -89,16 +89,24 @@ let createList = function(project) {
         addTodoBtn.classList.add('add-todo-btn');
         let newTodoName = document.createElement('input');
         newTodoName.placeholder = 'Add a Task';
-        newTodoName.id = 'new-todo-name';
+        newTodoName.classList.add('new-todo-name');
+        let container = document.createElement('div');
+        container.classList.add('list-container');
+        let addBtn = document.createElement('button');
+        addBtn.classList.add('add-button');
+        addBtn.classList.add('invisible');
+        addBtn.innerText = 'ADD';
         newTodoName.addEventListener('focus', todoNameHandler );
         newTodoName.addEventListener('blur', removeTodoHandler);
         addTodoBtn.addEventListener('click', addTodoHandler);
         //Append Form Elements to Form
         newTodoForm.appendChild(addTodoBtn);
         newTodoForm.appendChild(newTodoName);
+        newTodoForm.appendChild(addBtn);
+        container.appendChild(newTodoForm);
         //Append All Elements to List
         todoList.appendChild(projTitle);
-        todoList.appendChild(newTodoForm);
+        todoList.appendChild(container);
         todoList.appendChild(displayController.updateTodos(project));
 
         return todoList;
@@ -112,10 +120,17 @@ let updateTodos = function(project) {
     let list = document.createElement('div');
     list.id = 'task-list';
     for (let i = 0; i < project.todos.length; i++) {
+        let container = document.createElement('div');
+        container.classList.add('list-container');
         let item = document.createElement('p');
+        item.classList.add('todo-item');
         item.innerText = project.todos[i].name;
         item.dataset.index = i;
-        list.appendChild(item);
+        let checkButton = document.createElement('button');
+        checkButton.classList.add('checkmark-button');
+        container.appendChild(checkButton);
+        container.appendChild(item);
+        list.appendChild(container);
         item.addEventListener('click', updateDetails);
 }
     return list;
@@ -157,6 +172,7 @@ addProj.addEventListener('click', (e) => {
     if(document.querySelector('.new-project-name').value == "") {
         document.querySelector('.new-project-name').focus()
     } else {
+    console.log(projName.value);
     let newProj = new Project(projName.value);
     Projects.push(newProj);
     displayController.updateProjects();
@@ -181,14 +197,16 @@ let addTodoHandler = (e) => {
 };
 
 let todoNameHandler = (e) => {
+
+    document.querySelector('.add-button').classList.remove('invisible');
+    e.target.parentElement.parentElement.style.borderBottom = "1px solid #3e69e4";
     document.querySelector('.add-todo-btn').id = 'focused-todo-btn';
-    document.querySelector('.new-todo-name').id = 'focused-todo-name';
 };
 
 let removeTodoHandler = (e) => {
+    document.querySelector('.add-button').classList.add('invisible');
+    e.target.parentElement.parentElement.style.borderBottom = "1px solid #ddd";
     document.querySelector('.add-todo-btn').removeAttribute('id');
-    document.querySelector('.new-todo-name').removeAttribute('id');
-    document.querySelector('.new-todo-name').value = "";
 }
 
 document.querySelector('.new-project-name').addEventListener('focus', (e) => {
@@ -197,7 +215,6 @@ document.querySelector('.new-project-name').addEventListener('focus', (e) => {
 
 document.querySelector('.new-project-name').addEventListener('blur', (e) => {
     document.querySelector('.add-project-btn').removeAttribute('id');
-    document.querySelector('.new-project-name').value = "";
 });
 
 
