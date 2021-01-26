@@ -15,6 +15,7 @@ body {
 
 #new-project-form, #new-todo-form {
     display: flex;
+    padding: 12px 0;
 }
 
 
@@ -78,9 +79,8 @@ body {
     font-size: 16px;
     border: none;
     background: none;
-    color: #3e69e4;
-    background-image: url(assets/plus.svg);
-    background-size: 15px;
+    background-image: url(assets/plus-blue.png);
+    background-size: 16px;
     background-position: 5% 50%;
     background-repeat: no-repeat;
 }
@@ -91,7 +91,7 @@ body {
 
 
 #focused-todo-btn {
-    background-image: url(assets/empty-check.png);
+    background-image: url(assets/empty-check-gray.png);
 }
 
 .add-todo-btn:hover {
@@ -99,19 +99,32 @@ body {
 }
 
 
-#new-todo-name {
+.new-todo-name {
     background: none;
     border: none;
     color: #3e69e4;
+    font-size: 16px;
+    padding-left: 15px;
 }
 
-#new-todo-name:focus {
+.new-todo-name:focus {
     outline: none;
+    color: #767678;
+}
+
+.new-todo-name:focus::placeholder {
+    color: #767678;
+}
+
+.new-todo-name::placeholder {
+    color: #3e69e4;
 }
 
 #list-panel {
     padding-top: 30px;
     padding-left: 20px;
+    padding-right: 20px;
+    width: 60%;
 }
 
 #detail-name {
@@ -186,4 +199,43 @@ body {
     background-repeat: no-repeat;
     background-size: 18px;
     margin-bottom: 40px;
+}
+
+.list-container {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+}
+
+.checkmark-button {
+    width: 20px;
+    font-size: 16px;
+    border: none;
+    background: none;
+    background-image: url(assets/empty-check-blue.png);
+    background-size: 16px;
+    background-position: 5% 50%;
+    background-repeat: no-repeat;
+}
+
+.todo-item {
+
+    padding-left: 15px;
+}
+
+.add-button {
+    background: none;
+    border: none;
+    position: absolute;
+    right: 20px;
+    color: #3e69e4; 
+    font-weight: bold;
+}
+
+.add-button:focus {
+    outline: none;
+}
+
+.add-button:hover {
+    cursor: pointer;
 }
