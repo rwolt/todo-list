@@ -146,28 +146,32 @@ let updateDetails = function(e) {
     return { updateProjects, createList, clearList, updateTodos };
 })();
 
-let projName = document.querySelector('#new-project-name');
-let todoName = document.querySelector('#new-todo-name');
-let addProj = document.querySelector('#add-project-btn');
+let projName = document.querySelector('.new-project-name');
+let todoName = document.querySelector('.new-todo-name');
+let addProj = document.querySelector('.add-project-btn');
 let addTodo = document.querySelector('.add-todo-btn');
 let delBtn = document.querySelector('#delete-btn');
 
 addProj.addEventListener('click', (e) => {
     e.preventDefault();
+    if(document.querySelector('.new-project-name').value == "") {
+        document.querySelector('.new-project-name').focus()
+    } else {
     let newProj = new Project(projName.value);
     Projects.push(newProj);
     displayController.updateProjects();
     document.querySelector('#new-project-form').reset();
+    }
 });
 
 let addTodoHandler = (e) => {
     e.preventDefault();
-    if(document.querySelector('#new-todo-name').value == "") {
-        document.querySelector('#new-todo-name').focus()
+    if(document.querySelector('.new-todo-name').value == "") {
+        document.querySelector('.new-todo-name').focus()
     }
     else {
     let currentIndex = document.querySelector('.selected').dataset.index;
-    let todoName = document.querySelector('#new-todo-name').value;
+    let todoName = document.querySelector('.new-todo-name').value;
     let currentProject = Projects[currentIndex];
     currentProject.addTask(todoName);
     displayController.clearList();
@@ -177,13 +181,26 @@ let addTodoHandler = (e) => {
 };
 
 let todoNameHandler = (e) => {
-    document.querySelector('.add-todo-btn').id = 'focused-todo-btn'  
+    document.querySelector('.add-todo-btn').id = 'focused-todo-btn';
+    document.querySelector('.new-todo-name').id = 'focused-todo-name';
 };
 
 let removeTodoHandler = (e) => {
     document.querySelector('.add-todo-btn').removeAttribute('id');
-    document.querySelector('#new-todo-name').value = "";
+    document.querySelector('.new-todo-name').removeAttribute('id');
+    document.querySelector('.new-todo-name').value = "";
 }
+
+document.querySelector('.new-project-name').addEventListener('focus', (e) => {
+    document.querySelector('.add-project-btn').id = 'focused-proj-btn'  
+});
+
+document.querySelector('.new-project-name').addEventListener('blur', (e) => {
+    document.querySelector('.add-project-btn').removeAttribute('id');
+    document.querySelector('.new-project-name').value = "";
+});
+
+
 
 delBtn.addEventListener('click', (e) => {
     e.preventDefault();
