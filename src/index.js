@@ -97,8 +97,29 @@ let createList = function(project) {
         addBtn.classList.add('invisible');
         addBtn.innerText = 'ADD';
         newTodoName.addEventListener('focus', todoNameHandler );
+        newTodoName.addEventListener('keyup', checkValueHandler);
         newTodoName.addEventListener('blur', removeTodoHandler);
+        addTodoBtn.addEventListener('mousedown', function (e) {
+            e.preventDefault();
+            window.prevFocus = document.activeElement;
+        });
+        addBtn.addEventListener('mousedown', function (e) {
+            e.preventDefault();
+            window.prevFocus = document.activeElement;
+        });
         addTodoBtn.addEventListener('click', addTodoHandler);
+
+        newTodoName.addEventListener('keydown', function(e) {
+            if(e.key=='Enter') {
+                if (newTodoName.value !== "") {
+                    document.querySelector('.add-todo-btn').dispatchEvent(new MouseEvent('mousedown'));
+                    document.querySelector('.add-todo-btn').dispatchEvent(new MouseEvent('mouseup'));
+                } else {
+                    e.preventDefault();
+                }     
+            }
+        });
+        addBtn.addEventListener('click', addTodoHandler);
         //Append Form Elements to Form
         newTodoForm.appendChild(addTodoBtn);
         newTodoForm.appendChild(newTodoName);
@@ -111,6 +132,8 @@ let createList = function(project) {
 
         return todoList;
 }
+
+
 
 let updateTodos = function(project) {
     //Populate Todo List Element
@@ -135,14 +158,12 @@ let updateTodos = function(project) {
 }
     return list;
 }
-
 let clearList = function() {
     let list = document.querySelector('#task-list');
     list.parentElement.removeChild(list);
 }
 
 let updateDetails = function(e) {
-    e.preventDefault();
     if (document.querySelector('#detail-panel').classList.contains('invisible')){
         document.querySelector('#detail-panel').classList.toggle('invisible');
     }
@@ -160,6 +181,45 @@ let updateDetails = function(e) {
 
     return { updateProjects, createList, clearList, updateTodos };
 })();
+
+let addTodoHandler = (e) => {
+    e.preventDefault();
+    if(window.prevFocus !== document.querySelector('.new-todo-name')) {
+            document.querySelector('.new-todo-name').focus()
+        }
+    else if (document.querySelector('.new-todo-name').value == "") {
+             document.querySelector('.add-todo-btn').focus();
+    }
+    else {
+            let currentIndex = document.querySelector('.selected').dataset.index;
+            let todoName = document.querySelector('.new-todo-name').value;
+            let currentProject = Projects[currentIndex];
+            currentProject.addTask(todoName);
+            displayController.clearList();
+            document.querySelector('.todo-list').appendChild(displayController.updateTodos(currentProject));
+            document.querySelector('#new-todo-form').reset();
+      }
+};
+
+let checkValueHandler = (e) => {
+    if(e.target.value != "") {
+        document.querySelector('.add-button').classList.remove('invisible');
+    } else {
+        document.querySelector('.add-button').classList.add('invisible');
+    }
+};
+
+let todoNameHandler = (e) => {
+    e.target.parentElement.parentElement.style.borderBottom = "1px solid #3e69e4";
+    document.querySelector('.add-todo-btn').id = 'focused-todo-btn';
+};
+
+let removeTodoHandler = (e) => {
+    document.querySelector('.add-button').classList.add('invisible');
+    e.target.parentElement.parentElement.style.borderBottom = "1px solid #ddd";
+    document.querySelector('.add-todo-btn').removeAttribute('id');
+    e.target.value = "";
+}
 
 let projName = document.querySelector('.new-project-name');
 let todoName = document.querySelector('.new-todo-name');
@@ -180,34 +240,7 @@ addProj.addEventListener('click', (e) => {
     }
 });
 
-let addTodoHandler = (e) => {
-    e.preventDefault();
-    if(document.querySelector('.new-todo-name').value == "") {
-        document.querySelector('.new-todo-name').focus()
-    }
-    else {
-    let currentIndex = document.querySelector('.selected').dataset.index;
-    let todoName = document.querySelector('.new-todo-name').value;
-    let currentProject = Projects[currentIndex];
-    currentProject.addTask(todoName);
-    displayController.clearList();
-    document.querySelector('.todo-list').appendChild(displayController.updateTodos(currentProject));
-    document.querySelector('#new-todo-form').reset();
-    }
-};
 
-let todoNameHandler = (e) => {
-
-    document.querySelector('.add-button').classList.remove('invisible');
-    e.target.parentElement.parentElement.style.borderBottom = "1px solid #3e69e4";
-    document.querySelector('.add-todo-btn').id = 'focused-todo-btn';
-};
-
-let removeTodoHandler = (e) => {
-    document.querySelector('.add-button').classList.add('invisible');
-    e.target.parentElement.parentElement.style.borderBottom = "1px solid #ddd";
-    document.querySelector('.add-todo-btn').removeAttribute('id');
-}
 
 document.querySelector('.new-project-name').addEventListener('focus', (e) => {
     document.querySelector('.add-project-btn').id = 'focused-proj-btn'  
@@ -247,5 +280,6 @@ projList[0].id = 'my-day';
 projList[1].id = 'important';
 projList[2].id = 'planned';
 projList[3].id = 'tasks';
+
 
 
