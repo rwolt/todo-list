@@ -101,6 +101,7 @@ body {
 
 .new-todo-name {
     background: none;
+    width: 500px;
     border: none;
     color: #3e69e4;
     font-size: 16px;
@@ -218,11 +219,30 @@ body {
     background-repeat: no-repeat;
 }
 
+.checkmark-completed {
+    width: 20px;
+    font-size: 16px;
+    border: none;
+    background: none;
+    background-image: url(assets/completed-check.png);
+    background-size: 16px;
+    background-position: 5% 50%;
+    background-repeat: no-repeat;
+}
+
 .checkmark-button:focus {
     outline: none;
 }
 
 .checkmark-button:hover {
+    cursor: pointer;
+}
+
+.checkmark-completed:focus {
+    outline: none;
+}
+
+.checkmark-completed {
     cursor: pointer;
 }
 
@@ -233,6 +253,11 @@ body {
 .todo-item {
 
     padding-left: 15px;
+}
+
+.todo-item-completed {
+    text-decoration: line-through;
+    color: #767678;
 }
 
 .add-button {
