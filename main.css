@@ -218,6 +218,18 @@ body {
     background-repeat: no-repeat;
 }
 
+.checkmark-button:focus {
+    outline: none;
+}
+
+.checkmark-button:hover {
+    cursor: pointer;
+}
+
+.list-container p:hover {
+    cursor: pointer;
+}
+
 .todo-item {
 
     padding-left: 15px;
