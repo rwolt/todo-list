@@ -143,6 +143,9 @@ let updateTodos = function(project) {
     
     let list = document.createElement('div');
     list.id = 'task-list';
+    let tasks = document.createElement('div');
+    let completed = document.createElement('div');
+
 
     for (let i = 0; i < project.todos.length; i++) {
         let container = document.createElement('div');
@@ -160,19 +163,35 @@ let updateTodos = function(project) {
             e.target.nextSibling.classList.toggle('todo-item-completed');
             checkButton.classList.toggle('checkmark-button');
             checkButton.classList.toggle('checkmark-completed');
+            displayController.clearList();
+            document.querySelector('.todo-list').appendChild(displayController.updateTodos(currentProject));
         });
         container.appendChild(checkButton);
         container.appendChild(item);
 
         if(project.todos[i].completed) { 
-            checkButton.classList.add('checkmark-completed'),
-            item.classList.add('todo-item-completed');
+            if(!completed.querySelector('#completed-list')){
+                let completedList = document.createElement('p');
+                completedList.id = 'completed-list';
+                completedList.innerText = 'Completed';
+                completed.appendChild(completedList);
+                checkButton.classList.add('checkmark-completed'),
+                item.classList.add('todo-item-completed');
+                completed.appendChild(container);
+            } else {
+                checkButton.classList.add('checkmark-completed'),
+                item.classList.add('todo-item-completed');
+                completed.appendChild(container);
+            }
         } else {
-            checkButton.classList.add('checkmark-button');
+                checkButton.classList.add('checkmark-button');
+                tasks.appendChild(container);
         };
-        list.appendChild(container);
+       
         item.addEventListener('click', updateDetails);
 }
+    list.appendChild(tasks);
+    list.appendChild(completed);
     return list;
 }
 let clearList = function() {
