@@ -140,8 +140,10 @@ let updateTodos = function(project) {
     if(document.querySelector('#task-list')) {
         document.querySelector('#task-list').parentElement.removeChild(document.querySelector('#task-list'));
     }
+    
     let list = document.createElement('div');
     list.id = 'task-list';
+
     for (let i = 0; i < project.todos.length; i++) {
         let container = document.createElement('div');
         container.classList.add('list-container');
@@ -150,9 +152,24 @@ let updateTodos = function(project) {
         item.innerText = project.todos[i].name;
         item.dataset.index = i;
         let checkButton = document.createElement('button');
-        checkButton.classList.add('checkmark-button');
+        checkButton.addEventListener('click', (e) => {
+            let currentProject = Projects[document.querySelector('.selected').dataset.index];
+            let index = e.target.nextSibling.dataset.index;
+            currentProject.todos[index].completed = !(currentProject.todos[index].completed);
+            console.log(currentProject.todos[index].completed);
+            e.target.nextSibling.classList.toggle('todo-item-completed');
+            checkButton.classList.toggle('checkmark-button');
+            checkButton.classList.toggle('checkmark-completed');
+        });
         container.appendChild(checkButton);
         container.appendChild(item);
+
+        if(project.todos[i].completed) { 
+            checkButton.classList.add('checkmark-completed'),
+            item.classList.add('todo-item-completed');
+        } else {
+            checkButton.classList.add('checkmark-button');
+        };
         list.appendChild(container);
         item.addEventListener('click', updateDetails);
 }
