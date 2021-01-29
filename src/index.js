@@ -14,8 +14,8 @@ Project.prototype.addTask = function(item) {
     this.todos.push(newTask);
 };
 
-Project.prototype.removeTask = function(task) {
-    this.todos.pop(task);
+Project.prototype.removeTask = function(index) {
+    this.todos.splice(index, 1);
 };
 
 function Task(name) {
@@ -291,8 +291,8 @@ document.querySelector('.new-project-name').addEventListener('blur', (e) => {
 delBtn.addEventListener('click', (e) => {
     e.preventDefault();
     let currentProj = Projects[document.querySelector('.selected').dataset.index];
-    let currentTask = currentProj.todos[document.querySelector('.selected-task').dataset.index];
-    currentProj.removeTask(currentTask);
+    let index = document.querySelector('.selected-task').dataset.index;
+    currentProj.removeTask(index);
     document.querySelector('.todo-list').appendChild(displayController.updateTodos(currentProj));
     document.querySelector('#detail-panel').classList.toggle('invisible');
 });
