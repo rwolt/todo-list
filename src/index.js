@@ -3,18 +3,19 @@ Projects = [];
 function Project(name) {
     this.name = name;
     this.todos = [];
+    this.count = 0;
 }
 
-Project.prototype.changeName = function(name) {
+Project.prototype.changeName = function (name) {
     this.name = name;
 };
 
-Project.prototype.addTask = function(item) {
+Project.prototype.addTask = function (item) {
     let newTask = new Task(item);
     this.todos.push(newTask);
 };
 
-Project.prototype.removeTask = function(index) {
+Project.prototype.removeTask = function (index) {
     this.todos.splice(index, 1);
 };
 
@@ -24,43 +25,49 @@ function Task(name) {
     this.important = false;
 }
 
-Task.prototype.changeName = function(name) {
+Task.prototype.changeName = function (name) {
     this.name = name;
 };
 
-Task.prototype.markComplete = function() {
+Task.prototype.markComplete = function () {
     this.completed = true;
 };
 
-Task.prototype.markNotComplete = function() {
+Task.prototype.markNotComplete = function () {
     this.completed = false;
 };
 
-Task.prototype.markImportant = function() {
+Task.prototype.markImportant = function () {
     this.important = true;
 };
 
-Task.prototype.markNotImportant = function() {
+Task.prototype.markNotImportant = function () {
     this.important = false;
 };
 
 //Module for controlling DOM elements
-let displayController = (function() {
+let displayController = (function () {
 
-//Add a new project to the Projects list
-let updateProjects = function() {
+    //Add a new project to the Projects list
+    let updateProjects = function () {
+        let projectContainer = document.createElement('div');
+        projectContainer.classList.add('project-container');
         let listEl = document.createElement('p');
         listEl.innerText = Projects[Projects.length - 1].name;
         listEl.dataset.index = `${Projects.length - 1}`
         let projectsList = document.getElementById('projects-list')
-        projectsList.appendChild(listEl);
+        let projectCounter = document.createElement('p');
+        projectCounter.innerText = Projects[listEl.dataset.index].count;
+        projectContainer.appendChild(listEl);
+        projectContainer.appendChild(projectCounter);
+        projectsList.appendChild(projectContainer);
         listEl.classList.add('project-list-item');
-//Event listener to change selected project and update the list panel
+        //Event listener to change selected project and update the list panel
         listEl.addEventListener('click', (e) => {
-            if(!(document.querySelector('#detail-panel').classList.contains('invisible'))) {
+            if (!(document.querySelector('#detail-panel').classList.contains('invisible'))) {
                 document.querySelector('#detail-panel').classList.toggle('invisible');
             }
-            if(document.querySelector('.selected')) {
+            if (document.querySelector('.selected')) {
                 document.querySelector('.selected').classList.remove('selected');
                 e.target.classList.add('selected');
             } else {
@@ -70,16 +77,16 @@ let updateProjects = function() {
             taskList.innerHTML = '';
             let newList = displayController.createList(Projects[e.target.dataset.index]);
             newList.dataset.index = e.target.dataset.index;
-            document.querySelector('#list-panel').appendChild(newList); 
+            document.querySelector('#list-panel').appendChild(newList);
         });
-} 
+    }
 
-let createList = function(project) {
+    let createList = function (project) {
         //Create Title Element
         let projTitle = document.createElement('h2');
         projTitle.className = 'title';
         projTitle.innerText = project.name;
-       //Create Todo List Element
+        //Create Todo List Element
         let todoList = document.createElement('div');
         todoList.className = 'todo-list';
         //Create Form and Form Elements for New Todo
@@ -96,7 +103,7 @@ let createList = function(project) {
         addBtn.classList.add('add-button');
         addBtn.classList.add('invisible');
         addBtn.innerText = 'ADD';
-        newTodoName.addEventListener('focus', todoNameHandler );
+        newTodoName.addEventListener('focus', todoNameHandler);
         newTodoName.addEventListener('keyup', checkValueHandler);
         newTodoName.addEventListener('blur', removeTodoHandler);
         addTodoBtn.addEventListener('mousedown', function (e) {
@@ -109,14 +116,14 @@ let createList = function(project) {
         });
         addTodoBtn.addEventListener('click', addTodoHandler);
 
-        newTodoName.addEventListener('keydown', function(e) {
-            if(e.key=='Enter') {
+        newTodoName.addEventListener('keydown', function (e) {
+            if (e.key == 'Enter') {
                 if (newTodoName.value !== "") {
                     document.querySelector('.add-todo-btn').dispatchEvent(new MouseEvent('mousedown'));
                     document.querySelector('.add-todo-btn').dispatchEvent(new MouseEvent('mouseup'));
                 } else {
                     e.preventDefault();
-                }     
+                }
             }
         });
         addBtn.addEventListener('click', addTodoHandler);
@@ -131,114 +138,132 @@ let createList = function(project) {
         todoList.appendChild(displayController.updateTodos(project));
 
         return todoList;
-}
-
-
-
-let updateTodos = function(project) {
-    //Populate Todo List Element
-    if(document.querySelector('#task-list')) {
-        document.querySelector('#task-list').parentElement.removeChild(document.querySelector('#task-list'));
     }
-    
-    let list = document.createElement('div');
-    list.id = 'task-list';
-    let tasks = document.createElement('div');
-    let completed = document.createElement('div');
+
+    let updateCounter = function() {
+        let currentProjectCount = Projects[document.querySelector('.selected').dataset.index].count;
+        let currentProjectCounterEl = document.querySelector('.selected').nextSibling;
+        currentProjectCounterEl.innerText = currentProjectCount;
+    };
 
 
-    for (let i = 0; i < project.todos.length; i++) {
-        let container = document.createElement('div');
-        container.classList.add('list-container');
-        let item = document.createElement('p');
-        item.classList.add('todo-item');
-        item.innerText = project.todos[i].name;
-        item.dataset.index = i;
-        let checkButton = document.createElement('button');
-        checkButton.addEventListener('click', (e) => {
-            let currentProject = Projects[document.querySelector('.selected').dataset.index];
-            let index = e.target.nextSibling.dataset.index;
-            currentProject.todos[index].completed = !(currentProject.todos[index].completed);
-            console.log(currentProject.todos[index].completed);
-            e.target.nextSibling.classList.toggle('todo-item-completed');
-            checkButton.classList.toggle('checkmark-button');
-            checkButton.classList.toggle('checkmark-completed');
-            displayController.clearList();
-            document.querySelector('.todo-list').appendChild(displayController.updateTodos(currentProject));
-        });
-        container.appendChild(checkButton);
-        container.appendChild(item);
+    let updateTodos = function (project) {
+        //Populate Todo List Element
+        if (document.querySelector('#task-list')) {
+            document.querySelector('#task-list').parentElement.removeChild(document.querySelector('#task-list'));
+        }
 
-        if(project.todos[i].completed) { 
-            if(!completed.querySelector('#completed-list')){
-                let completedList = document.createElement('p');
-                completedList.id = 'completed-list';
-                completedList.innerText = 'Completed';
-                completed.appendChild(completedList);
-                checkButton.classList.add('checkmark-completed'),
-                item.classList.add('todo-item-completed');
-                completed.appendChild(container);
+        let list = document.createElement('div');
+        list.id = 'task-list';
+        let tasks = document.createElement('div');
+        let completed = document.createElement('div');
+        let currentProject = Projects[document.querySelector('.selected').dataset.index];
+
+        for (let i = 0; i < project.todos.length; i++) {
+            let container = document.createElement('div');
+            container.classList.add('list-container');
+            let item = document.createElement('p');
+            item.classList.add('todo-item');
+            item.innerText = project.todos[i].name;
+            item.dataset.index = i;
+            let checkButton = document.createElement('button');
+            checkButton.addEventListener('click', (e) => {
+                let currentProject = Projects[document.querySelector('.selected').dataset.index];
+                let index = e.target.nextSibling.dataset.index;
+                currentProject.todos[index].completed = !(currentProject.todos[index].completed);
+                if (currentProject.todos[index].completed) {
+                    currentProject.count--;
+                    displayController.updateCounter();
+                } else {
+                    currentProject.count++;
+                    displayController.updateCounter();
+                };
+
+                e.target.nextSibling.classList.toggle('todo-item-completed');
+                checkButton.classList.toggle('checkmark-button');
+                checkButton.classList.toggle('checkmark-completed');
+                displayController.clearList();
+                document.querySelector('.todo-list').appendChild(displayController.updateTodos(currentProject));
+            });
+
+            container.appendChild(checkButton);
+            container.appendChild(item);
+
+            if (project.todos[i].completed) {
+                if (!completed.querySelector('#completed-list')) {
+                    let completedList = document.createElement('p');
+                    completedList.id = 'completed-list';
+                    completedList.innerText = 'Completed';
+                    completed.appendChild(completedList);
+                    checkButton.classList.add('checkmark-completed'),
+                        item.classList.add('todo-item-completed');
+                    completed.appendChild(container);
+                } else {
+                    checkButton.classList.add('checkmark-completed'),
+                        item.classList.add('todo-item-completed');
+                    completed.appendChild(container);
+                }
             } else {
-                checkButton.classList.add('checkmark-completed'),
-                item.classList.add('todo-item-completed');
-                completed.appendChild(container);
-            }
-        } else {
                 checkButton.classList.add('checkmark-button');
                 tasks.appendChild(container);
-        };
-       
-        item.addEventListener('click', updateDetails);
-}
-    list.appendChild(tasks);
-    list.appendChild(completed);
-    return list;
-}
-let clearList = function() {
-    let list = document.querySelector('#task-list');
-    list.parentElement.removeChild(list);
-}
+            };
 
-let updateDetails = function(e) {
-    if (document.querySelector('#detail-panel').classList.contains('invisible')){
-        document.querySelector('#detail-panel').classList.toggle('invisible');
-    }
-    if(document.querySelector('.selected-task')) {
-        document.querySelector('.selected-task').classList.remove('selected-task');
-        e.target.classList.add('selected-task');
-    } else {
-    e.target.classList.add('selected-task');
-    }
-    let currentProject = Projects[document.querySelector('.selected').dataset.index];
-    let currentTask = currentProject.todos[e.target.dataset.index];
-    let detailName = document.querySelector('#detail-name');
-    detailName.innerText = currentTask.name;
-}
+            document.querySelector('.selected').nextSibling.innerText = tasks.querySelectorAll('.list-container').length;
 
-    return { updateProjects, createList, clearList, updateTodos };
+            item.addEventListener('click', updateDetails);
+        }
+
+
+        list.appendChild(tasks);
+        list.appendChild(completed);
+        return list;
+    }
+    let clearList = function () {
+        let list = document.querySelector('#task-list');
+        list.parentElement.removeChild(list);
+    }
+
+    let updateDetails = function (e) {
+        if (document.querySelector('#detail-panel').classList.contains('invisible')) {
+            document.querySelector('#detail-panel').classList.toggle('invisible');
+        }
+        if (document.querySelector('.selected-task')) {
+            document.querySelector('.selected-task').classList.remove('selected-task');
+            e.target.classList.add('selected-task');
+        } else {
+            e.target.classList.add('selected-task');
+        }
+        let currentProject = Projects[document.querySelector('.selected').dataset.index];
+        let currentTask = currentProject.todos[e.target.dataset.index];
+        let detailName = document.querySelector('#detail-name');
+        detailName.innerText = currentTask.name;
+    }
+
+    return { updateProjects, createList, clearList, updateTodos, updateCounter };
 })();
 
 let addTodoHandler = (e) => {
     e.preventDefault();
-    if(window.prevFocus !== document.querySelector('.new-todo-name')) {
-            document.querySelector('.new-todo-name').focus()
-        }
+    if (window.prevFocus !== document.querySelector('.new-todo-name')) {
+        document.querySelector('.new-todo-name').focus()
+    }
     else if (document.querySelector('.new-todo-name').value == "") {
-             document.querySelector('.add-todo-btn').focus();
+        document.querySelector('.add-todo-btn').focus();
     }
     else {
-            let currentIndex = document.querySelector('.selected').dataset.index;
-            let todoName = document.querySelector('.new-todo-name').value;
-            let currentProject = Projects[currentIndex];
-            currentProject.addTask(todoName);
-            displayController.clearList();
-            document.querySelector('.todo-list').appendChild(displayController.updateTodos(currentProject));
-            document.querySelector('#new-todo-form').reset();
-      }
+        let currentIndex = document.querySelector('.selected').dataset.index;
+        let todoName = document.querySelector('.new-todo-name').value;
+        let currentProject = Projects[currentIndex];
+        currentProject.addTask(todoName);
+        displayController.clearList();
+        document.querySelector('.todo-list').appendChild(displayController.updateTodos(currentProject));
+        document.querySelector('#new-todo-form').reset();
+        document.querySelector('.add-button').classList.toggle('invisible');
+    }
 };
 
 let checkValueHandler = (e) => {
-    if(e.target.value != "") {
+    if (e.target.value != "") {
         document.querySelector('.add-button').classList.remove('invisible');
     } else {
         document.querySelector('.add-button').classList.add('invisible');
@@ -262,24 +287,25 @@ let todoName = document.querySelector('.new-todo-name');
 let addProj = document.querySelector('.add-project-btn');
 let addTodo = document.querySelector('.add-todo-btn');
 let delBtn = document.querySelector('#delete-btn');
+let collapseBtn = document.querySelector('#collapse-btn');
 
 addProj.addEventListener('click', (e) => {
     e.preventDefault();
-    if(document.querySelector('.new-project-name').value == "") {
+    if (document.querySelector('.new-project-name').value == "") {
         document.querySelector('.new-project-name').focus()
     } else {
-    console.log(projName.value);
-    let newProj = new Project(projName.value);
-    Projects.push(newProj);
-    displayController.updateProjects();
-    document.querySelector('#new-project-form').reset();
+        console.log(projName.value);
+        let newProj = new Project(projName.value);
+        Projects.push(newProj);
+        displayController.updateProjects();
+        document.querySelector('#new-project-form').reset();
     }
 });
 
 
 
 document.querySelector('.new-project-name').addEventListener('focus', (e) => {
-    document.querySelector('.add-project-btn').id = 'focused-proj-btn'  
+    document.querySelector('.add-project-btn').id = 'focused-proj-btn'
 });
 
 document.querySelector('.new-project-name').addEventListener('blur', (e) => {
@@ -297,6 +323,10 @@ delBtn.addEventListener('click', (e) => {
     document.querySelector('#detail-panel').classList.toggle('invisible');
 });
 
+collapseBtn.addEventListener('click', (e) => {
+    document.querySelector('#detail-panel').classList.toggle('invisible');
+});
+
 let tasks = new Project('Tasks');
 let important = new Project('Important');
 let planned = new Project('Planned');
@@ -310,6 +340,7 @@ Projects.push(planned);
 displayController.updateProjects();
 Projects.push(tasks);
 displayController.updateProjects();
+
 
 let projList = document.querySelectorAll('.project-list-item');
 projList[0].id = 'my-day';
