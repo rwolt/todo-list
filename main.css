@@ -121,17 +121,33 @@ body {
     color: #3e69e4;
 }
 
+#detail-panel {
+    flex-grow: 2;
+    background-color: #f5f5f5;
+    border-left: 1px solid #cccccc;
+    padding: 20px;
+}
+
 #list-panel {
     padding-top: 30px;
     padding-left: 20px;
     padding-right: 20px;
-    width: 60%;
+    flex-grow: 4;
+    flex-shrink: 2;
 }
 
-#detail-name {
-    font-size: 1.4em;
-    font-weight: bold;
+#projects-panel {
+    padding-top: 70px;
+    background: #f4f4f4;
+    height: 100vh;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 0;
+    flex-shrink: 0;
+    border-right: 1px solid #cccccc;
 }
+
 
 .invisible {
     display: none;
@@ -142,15 +158,7 @@ body {
     font-size: 22px;
 }
 
-#projects-panel {
-    padding-top: 70px;
-    background: #eee;
-    width: 15%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    border-right: 1px solid #cccccc;
-}
+
 
 .project-list-item {
     font-size: 16px;
@@ -219,6 +227,7 @@ body {
     background-repeat: no-repeat;
 }
 
+
 .checkmark-completed {
     width: 20px;
     font-size: 16px;
@@ -276,3 +285,87 @@ body {
 .add-button:hover {
     cursor: pointer;
 }
+
+.detail-container {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #eaeaea;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+#detail-check {
+    height: 20px;
+    
+}
+
+#detail-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-left: 20px;
+}
+
+#my-day-card {
+    background-image: url(assets/sun-gray.png);
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: 2% 50%;
+}
+
+#my-day-card p {
+    margin-left: 40px;
+}
+
+#delete-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    border: none;
+    background: none;
+    background-image: url(assets/trash-gray.png);
+    background-size: 25px;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+
+#delete-btn:focus {
+    outline: none;
+}
+
+#delete-btn:hover {
+    cursor: pointer;
+}
+
+#collapse-btn {
+    width: 30px;
+    height: 20px;
+    font-size: 16px;
+    border: none;
+    background: none;
+    background-image: url(assets/collapse.png);
+    background-size: 25px;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+
+#collapse-btn:focus {
+    outline: none;
+}
+
+#collapse-btn:hover {
+    cursor: pointer;
+}
+
+#due-date-card {
+    background-image: url(assets/calendar-gray.png);
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: 2% 50%;
+}
+
+#due-date-card p {
+    margin-left: 40px;
+}
+
+

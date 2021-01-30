@@ -16,8 +16,18 @@
     </div>
     <div id="list-panel"></div>
     <div id="detail-panel" class="invisible">
-        <p id="detail-name"></p>
-        <button id="delete-btn">Del</button>
+        <div class ="detail-container">
+            <button class="checkmark-button" id="detail-check"></button>
+            <p id="detail-name"></p>
+        </div>
+        <div class ="detail-container" id="my-day-card">
+            <p >Add to My Day</p>
+        </div>
+        <div class ="detail-container" id="due-date-card">
+            <p >Add Due Date</p>
+        </div>
+        <button id="collapse-btn"></button>
+        <button id="delete-btn"></button>
     </div>
     <script src="index.js"></script>
 </body>
