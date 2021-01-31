@@ -168,12 +168,24 @@ let displayController = (function () {
             checkButton.addEventListener('click', (e) => {
                 let currentProject = Projects[document.querySelector('.selected').dataset.index];
                 let index = e.target.nextSibling.dataset.index;
+                let task = currentProject.todos[index];
+                let parentProject = task.parentProject;
+                parentIndex = parentProject.todos.indexOf(task);
                 currentProject.todos[index].completed = !(currentProject.todos[index].completed);
-                if (currentProject.todos[index].completed) {
-                    currentProject.count--;
+                if (parentProject.todos.filter(todo => todo.completed == false).length != 0) {
+                    document.querySelectorAll('.project-container')[Projects.indexOf(parentProject)].lastElementChild.classList.remove('invisible');
+                    document.querySelectorAll('.project-container')[Projects.indexOf(parentProject)].lastElementChild.innerText =
+                        parentProject.todos.filter(todo => todo.completed == false).length;
                 } else {
-                    currentProject.count++;
-                };
+                    document.querySelectorAll('.project-container')[Projects.indexOf(parentProject)].lastElementChild.classList.add('invisible');
+                }
+                // if (currentProject.todos[index].completed) {
+                //     currentProject.count--;
+                //     // parentProject.count --;
+                // } else {
+                //     currentProject.count++;
+                //     // parentProject.count++;
+                // };
 
                 e.target.nextSibling.classList.toggle('todo-item-completed');
                 checkButton.classList.toggle('checkmark-button');
@@ -253,6 +265,13 @@ let displayController = (function () {
         let detailName = document.querySelector('#detail-name');
         detailName.innerText = currentTask.name;
         detailName.dataset.index = e.target.dataset.index;
+        if (myDay.todos.indexOf(currentTask) + 1) {
+            document.querySelector('#my-day-card').firstElementChild.classList.add('my-day-added');
+            document.querySelector('#my-day-card').firstElementChild.innerText = 'Added to My Day';
+        } else {
+            document.querySelector('#my-day-card').firstElementChild.classList.remove('my-day-added');
+            document.querySelector('#my-day-card').firstElementChild.innerText = 'Add to My Day';
+        }
     }
 
     return { updateProjects, createList, clearList, updateTodos };
@@ -335,14 +354,22 @@ myDayBtn.addEventListener('click', (e) => {
    let currentTask = currentProj.todos[listIndex];
    if (!(myDay.todos.indexOf(currentTask) + 1)) {
         myDay.todos.push(currentTask);
-        if (myDay.todos.filter(todo => todo.completed == false).length !== 0) {
+        myDayBtn.firstElementChild.innerText = 'Added to My Day';
+        myDayBtn.firstElementChild.classList.toggle('my-day-added');
+
+    }
+        else {
+            myDay.removeTask(myDay.todos.indexOf(currentTask));
+            myDayBtn.firstElementChild.innerText = 'Add to My Day';
+            myDayBtn.firstElementChild.classList.toggle('my-day-added');
+        }
+    if (myDay.todos.filter(todo => todo.completed == false).length !== 0) {
             document.querySelector('#my-day').lastElementChild.innerText = myDay.todos.filter(todo => todo.completed == false).length;
             document.querySelector('#my-day').lastElementChild.classList.remove('invisible');
-        } 
-    }
-        // else {
-        //     document.querySelector('#my-day').lastElementChild.classList.add
-        // }
+        } else {
+            document.querySelector('#my-day').lastElementChild.innerText = myDay.todos.filter(todo => todo.completed == false).length;
+            document.querySelector('#my-day').lastElementChild.classList.add('invisible');
+        }
 }, true);
 
 
