@@ -54,31 +54,36 @@ let displayController = (function () {
         projectContainer.classList.add('project-container');
         let listEl = document.createElement('p');
         listEl.innerText = Projects[Projects.length - 1].name;
-        listEl.dataset.index = `${Projects.length - 1}`
+        listEl.classList.add('project-list-item');
+        projectContainer.dataset.index = `${Projects.length - 1}`
         let projectsList = document.getElementById('projects-list')
         let projectCounter = document.createElement('p');
-        projectCounter.innerText = Projects[listEl.dataset.index].count;
+        projectCounter.classList.add('task-counter');
+        projectCounter.classList.add('invisible');
+        projectCounter.innerText = Projects[projectContainer.dataset.index].count;
         projectContainer.appendChild(listEl);
         projectContainer.appendChild(projectCounter);
         projectsList.appendChild(projectContainer);
-        listEl.classList.add('project-list-item');
+
         //Event listener to change selected project and update the list panel
-        listEl.addEventListener('click', (e) => {
+        projectContainer.addEventListener('click', (e) => {
             if (!(document.querySelector('#detail-panel').classList.contains('invisible'))) {
                 document.querySelector('#detail-panel').classList.toggle('invisible');
             }
             if (document.querySelector('.selected')) {
+                e.stopPropagation();
                 document.querySelector('.selected').classList.remove('selected');
-                e.target.classList.add('selected');
+                e.currentTarget.classList.add('selected');
             } else {
-                e.target.classList.add('selected');
+                e.stopPropagation();
+                e.currentTarget.classList.add('selected');
             }
             let taskList = document.querySelector('#list-panel');
             taskList.innerHTML = '';
-            let newList = displayController.createList(Projects[e.target.dataset.index]);
+            let newList = displayController.createList(Projects[e.currentTarget.dataset.index]);
             newList.dataset.index = e.target.dataset.index;
             document.querySelector('#list-panel').appendChild(newList);
-        });
+        }, true);
     }
 
     let createList = function (project) {
@@ -140,13 +145,6 @@ let displayController = (function () {
         return todoList;
     }
 
-    let updateCounter = function() {
-        let currentProjectCount = Projects[document.querySelector('.selected').dataset.index].count;
-        let currentProjectCounterEl = document.querySelector('.selected').nextSibling;
-        currentProjectCounterEl.innerText = currentProjectCount;
-    };
-
-
     let updateTodos = function (project) {
         //Populate Todo List Element
         if (document.querySelector('#task-list')) {
@@ -157,7 +155,6 @@ let displayController = (function () {
         list.id = 'task-list';
         let tasks = document.createElement('div');
         let completed = document.createElement('div');
-        let currentProject = Projects[document.querySelector('.selected').dataset.index];
 
         for (let i = 0; i < project.todos.length; i++) {
             let container = document.createElement('div');
@@ -173,10 +170,8 @@ let displayController = (function () {
                 currentProject.todos[index].completed = !(currentProject.todos[index].completed);
                 if (currentProject.todos[index].completed) {
                     currentProject.count--;
-                    displayController.updateCounter();
                 } else {
                     currentProject.count++;
-                    displayController.updateCounter();
                 };
 
                 e.target.nextSibling.classList.toggle('todo-item-completed');
@@ -208,10 +203,18 @@ let displayController = (function () {
                 tasks.appendChild(container);
             };
 
-            document.querySelector('.selected').nextSibling.innerText = tasks.querySelectorAll('.list-container').length;
-
             item.addEventListener('click', updateDetails);
         }
+            
+            if(tasks.querySelectorAll('.list-container').length == 0) {
+                document.querySelector('.selected p:last-child').classList.add('invisible');
+            } else {  
+                document.querySelector('.selected p:last-child').classList.remove('invisible');
+            };
+
+            document.querySelector('.selected p:last-child').innerText = tasks.querySelectorAll('.list-container').length;
+            
+           
 
 
         list.appendChild(tasks);
@@ -239,7 +242,7 @@ let displayController = (function () {
         detailName.innerText = currentTask.name;
     }
 
-    return { updateProjects, createList, clearList, updateTodos, updateCounter };
+    return { updateProjects, createList, clearList, updateTodos };
 })();
 
 let addTodoHandler = (e) => {
@@ -342,11 +345,12 @@ Projects.push(tasks);
 displayController.updateProjects();
 
 
-let projList = document.querySelectorAll('.project-list-item');
+let projList = document.querySelectorAll('.project-container');
 projList[0].id = 'my-day';
 projList[1].id = 'important';
 projList[2].id = 'planned';
 projList[3].id = 'tasks';
 
-
+document.querySelector('#tasks').classList.add('selected');
+document.querySelector('#tasks').dispatchEvent(new MouseEvent('click'));
 

@@ -159,20 +159,33 @@ body {
 }
 
 
-
 .project-list-item {
     font-size: 16px;
     padding: 20px 15px;
     padding-left: 40px;
+}
+.project-container {
     background-image: url(assets/task-blue.png);
     background-repeat: no-repeat;
     background-size: 16px;
     background-position: 5% 50%;
     margin: 0;
+    display: flex;
+    align-items: baseline;
 }
 
-.project-list-item:hover {
+.task-counter {
+    margin-left: auto;
+    margin-right: 5%;
+    order: 2;
+    color: #000;
+    font-weight: normal; 
+}
+
+
+.project-container:hover {
     background-color: #f8f7f7;
+    cursor: pointer;
 }
 
 #new-project-form:hover {
@@ -214,6 +227,12 @@ body {
     display: flex;
     border-bottom: 1px solid #ddd;
     position: relative;
+}
+
+#completed-list {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 40px;
 }
 
 .checkmark-button {
@@ -367,5 +386,6 @@ body {
 #due-date-card p {
     margin-left: 40px;
 }
+
 
 
