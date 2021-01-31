@@ -181,8 +181,13 @@ let displayController = (function () {
                 document.querySelector('.todo-list').appendChild(displayController.updateTodos(currentProject));
             });
 
+            let starBtn = document.createElement('button');
+            starBtn.classList.add('list-star');
+
+
             container.appendChild(checkButton);
             container.appendChild(item);
+            container.appendChild(starBtn);
 
             if (project.todos[i].completed) {
                 if (!completed.querySelector('#completed-list')) {
@@ -212,6 +217,12 @@ let displayController = (function () {
                 document.querySelector('.selected p:last-child').classList.remove('invisible');
             };
 
+            if(myDay.todos.filter(todo => todo.completed == false).length != 0) {
+                document.querySelector('#my-day').lastElementChild.innerText = myDay.todos.filter(todo => todo.completed == false).length;
+                document.querySelector('#my-day').lastElementChild.classList.remove('invisible');
+            } else {
+                document.querySelector('#my-day').lastElementChild.classList.add('invisible');
+            }
             document.querySelector('.selected p:last-child').innerText = tasks.querySelectorAll('.list-container').length;
             
            
@@ -240,6 +251,7 @@ let displayController = (function () {
         let currentTask = currentProject.todos[e.target.dataset.index];
         let detailName = document.querySelector('#detail-name');
         detailName.innerText = currentTask.name;
+        detailName.dataset.index = e.target.dataset.index;
     }
 
     return { updateProjects, createList, clearList, updateTodos };
@@ -291,6 +303,7 @@ let addProj = document.querySelector('.add-project-btn');
 let addTodo = document.querySelector('.add-todo-btn');
 let delBtn = document.querySelector('#delete-btn');
 let collapseBtn = document.querySelector('#collapse-btn');
+let myDayBtn = document.querySelector('#my-day-card');
 
 addProj.addEventListener('click', (e) => {
     e.preventDefault();
@@ -315,6 +328,21 @@ document.querySelector('.new-project-name').addEventListener('blur', (e) => {
     document.querySelector('.add-project-btn').removeAttribute('id');
 });
 
+myDayBtn.addEventListener('click', (e) => {
+   let currentProj = Projects[document.querySelector('.selected').dataset.index];
+   let listIndex = e.currentTarget.previousElementSibling.lastElementChild.dataset.index;
+   let currentTask = currentProj.todos[listIndex];
+   if (!(myDay.todos.indexOf(currentTask) + 1)) {
+        myDay.todos.push(currentTask);
+        if (myDay.todos.filter(todo => todo.completed == false).length !== 0) {
+            document.querySelector('#my-day').lastElementChild.innerText = myDay.todos.filter(todo => todo.completed == false).length;
+            document.querySelector('#my-day').lastElementChild.classList.remove('invisible');
+        } 
+    }
+        // else {
+        //     document.querySelector('#my-day').lastElementChild.classList.add
+        // }
+}, true);
 
 
 delBtn.addEventListener('click', (e) => {
@@ -322,6 +350,9 @@ delBtn.addEventListener('click', (e) => {
     let currentProj = Projects[document.querySelector('.selected').dataset.index];
     let index = document.querySelector('.selected-task').dataset.index;
     currentProj.removeTask(index);
+    if(myDay.todos.indexOf(currentProj[index])) {
+        myDay.removeTask(myDay.todos.indexOf(currentProj[index]));
+    };
     document.querySelector('.todo-list').appendChild(displayController.updateTodos(currentProj));
     document.querySelector('#detail-panel').classList.toggle('invisible');
 });

@@ -229,6 +229,26 @@ body {
     position: relative;
 }
 
+.list-star {
+    width: 20px;
+    margin-left: auto;
+    order: 2;
+    border: none;
+    background: none;
+    background-image: url(assets/star-gray.png);
+    background-size: 20px;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.list-star:hover {
+    cursor: pointer;
+}
+
+.list-star:focus {
+    outline: none;
+}
+
 #completed-list {
     font-size: 16px;
     font-weight: bold;
@@ -334,6 +354,10 @@ body {
 
 #my-day-card p {
     margin-left: 40px;
+}
+
+#my-day-card:hover {
+    cursor: pointer;
 }
 
 #delete-btn {
