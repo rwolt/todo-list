@@ -266,10 +266,10 @@ let displayController = (function () {
         detailName.innerText = currentTask.name;
         detailName.dataset.index = e.target.dataset.index;
         if (myDay.todos.indexOf(currentTask) + 1) {
-            document.querySelector('#my-day-card').firstElementChild.classList.add('my-day-added');
+            document.querySelector('#my-day-card').classList.add('my-day-added');
             document.querySelector('#my-day-card').firstElementChild.innerText = 'Added to My Day';
         } else {
-            document.querySelector('#my-day-card').firstElementChild.classList.remove('my-day-added');
+            document.querySelector('#my-day-card').classList.remove('my-day-added');
             document.querySelector('#my-day-card').firstElementChild.innerText = 'Add to My Day';
         }
     }
@@ -355,14 +355,18 @@ myDayBtn.addEventListener('click', (e) => {
    if (!(myDay.todos.indexOf(currentTask) + 1)) {
         myDay.todos.push(currentTask);
         myDayBtn.firstElementChild.innerText = 'Added to My Day';
-        myDayBtn.firstElementChild.classList.toggle('my-day-added');
+        myDayBtn.classList.toggle('my-day-added');
 
-    }
-        else {
+    } else if (currentProj == Projects[0]) {
+        myDay.removeTask(myDay.todos.indexOf(currentTask));
+        document.querySelector('.todo-list').appendChild(displayController.updateTodos(currentProj));
+        document.querySelector('#detail-panel').classList.toggle('invisible');
+    } else {
             myDay.removeTask(myDay.todos.indexOf(currentTask));
             myDayBtn.firstElementChild.innerText = 'Add to My Day';
-            myDayBtn.firstElementChild.classList.toggle('my-day-added');
-        }
+            myDayBtn.classList.toggle('my-day-added');
+    }
+
     if (myDay.todos.filter(todo => todo.completed == false).length !== 0) {
             document.querySelector('#my-day').lastElementChild.innerText = myDay.todos.filter(todo => todo.completed == false).length;
             document.querySelector('#my-day').lastElementChild.classList.remove('invisible');

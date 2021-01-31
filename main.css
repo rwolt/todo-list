@@ -199,7 +199,7 @@ body {
 }
 
 #my-day {
-    background-image: url(assets/sun-gray.png) !important;
+    background-image: url(assets/sun-gray.png);
     background-repeat: no-repeat; 
     background-size: 18px;
 }
@@ -413,6 +413,7 @@ body {
 
 .my-day-added {
     color:  #3e69e4;
+    background-image: url(assets/sun-blue.png) !important;
 }
 
 
