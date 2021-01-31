@@ -13,6 +13,9 @@ Project.prototype.changeName = function (name) {
 Project.prototype.addTask = function (item) {
     let newTask = new Task(item);
     newTask.parentProject = this;
+    if(newTask.parentProject == Projects[1]) {
+        newTask.important = true;
+    }
     this.todos.push(newTask);
 };
 
@@ -172,6 +175,15 @@ let displayController = (function () {
                 let parentProject = task.parentProject;
                 parentIndex = parentProject.todos.indexOf(task);
                 currentProject.todos[index].completed = !(currentProject.todos[index].completed);
+                
+                if (important.todos.filter(todo => todo.completed == false).length != 0) {
+                    document.querySelector('#important').lastElementChild.classList.remove('invisible');
+                    document.querySelector('#important').lastElementChild.innerText =
+                        important.todos.filter(todo => todo.completed == false).length;
+                }else {
+                    document.querySelector('#important').lastElementChild.classList.add('invisible');
+                }
+    
                 if (parentProject.todos.filter(todo => todo.completed == false).length != 0) {
                     document.querySelectorAll('.project-container')[Projects.indexOf(parentProject)].lastElementChild.classList.remove('invisible');
                     document.querySelectorAll('.project-container')[Projects.indexOf(parentProject)].lastElementChild.innerText =
@@ -196,6 +208,36 @@ let displayController = (function () {
 
             let starBtn = document.createElement('button');
             starBtn.classList.add('list-star');
+            if(project.todos[i].important) {
+                starBtn.classList.add('list-star-important');
+            }
+
+            starBtn.addEventListener('click', (e) => {
+               let listIndex = e.target.previousElementSibling.dataset.index;
+               let currentProj = Projects[document.querySelector('.selected').dataset.index];
+               let currentTask = currentProj.todos[listIndex];
+               currentTask.important = !currentTask.important;
+               e.target.classList.toggle('list-star-important');
+               let important = Projects[1];
+               
+               if (!(important.todos.indexOf(currentTask) + 1)) {
+                    important.todos.push(currentTask);
+                    myDayBtn.classList.toggle('list-star-important');
+        
+               } else if (currentProj == Projects[1]) {
+                    important.removeTask(important.todos.indexOf(currentTask));
+                    document.querySelector('.todo-list').appendChild(displayController.updateTodos(currentProj));
+                    important.removeTask(myDay.todos.indexOf(currentTask));
+                }
+        
+                if (important.todos.filter(todo => todo.completed == false).length !== 0) {
+                    document.querySelector('#important').lastElementChild.innerText = important.todos.filter(todo => todo.completed == false).length;
+                    document.querySelector('#important').lastElementChild.classList.remove('invisible');
+                } else {
+                    document.querySelector('#important').lastElementChild.innerText = important.todos.filter(todo => todo.completed == false).length;
+                    document.querySelector('#important').lastElementChild.classList.add('invisible');
+                }
+            });
 
 
             container.appendChild(checkButton);
@@ -383,8 +425,14 @@ delBtn.addEventListener('click', (e) => {
     let index = document.querySelector('.selected-task').dataset.index;
     let parentProj = currentProj.todos[index].parentProject
     parentProjIndex = Projects.indexOf(parentProj);
-    parentProj.removeTask(currentProj.todos[index]);
+    parentProj.removeTask(parentProj.todos.indexOf(currentProj.todos[index]));
     parentProjEl = document.querySelectorAll('.project-container')[parentProjIndex];
+
+    if((myDay.todos.indexOf(currentProj[index])) || (important.todos.indexOf(currentProj[index]))) {
+        myDay.removeTask(myDay.todos.indexOf(currentProj[index]));
+        important.removeTask(important.todos.indexOf(currentProj[index]));
+    }
+
     if (parentProj.todos.filter(todo => todo.completed == false).length !== 0){
     parentProjEl.lastElementChild.innerText = parentProj.todos.filter(todo => todo.completed == false).length;
     } else {
@@ -393,10 +441,20 @@ delBtn.addEventListener('click', (e) => {
     if (myDay.todos.filter(todo => todo.completed == false).length !== 0) {
         document.querySelector('#my-day').lastElementChild.innerText = myDay.todos.filter(todo => todo.completed == false).length;
         document.querySelector('#my-day').lastElementChild.classList.remove('invisible');
+    } else {
+        document.querySelector('#my-day').lastElementChild.innerText = myDay.todos.filter(todo => todo.completed == false).length;
+        document.querySelector('#my-day').lastElementChild.classList.add('invisible');
+    } 
+    
+    if (important.todos.filter(todo => todo.completed == false).length !== 0) {
+        document.querySelector('#important').lastElementChild.innerText = important.todos.filter(todo => todo.completed == false).length;
+        document.querySelector('#important').lastElementChild.classList.remove('invisible');
+    } else {
+        document.querySelector('#important').lastElementChild.innerText = important.todos.filter(todo => todo.completed == false).length;
+        document.querySelector('#important').lastElementChild.classList.add('invisible');
     }
-    if(myDay.todos.indexOf(currentProj[index])) {
-        myDay.removeTask(myDay.todos.indexOf(currentProj[index]));
-    }
+
+    
     document.querySelector('.todo-list').appendChild(displayController.updateTodos(currentProj));
     document.querySelector('#detail-panel').classList.toggle('invisible');
 });

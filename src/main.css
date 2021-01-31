@@ -241,6 +241,10 @@ body {
     background-repeat: no-repeat;
 }
 
+.list-star-important {
+    background-image: url(assets/star-blue.png);
+}
+
 .list-star:hover {
     cursor: pointer;
 }
