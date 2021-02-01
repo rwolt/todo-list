@@ -167,6 +167,14 @@ let displayController = (function () {
             item.classList.add('todo-item');
             item.innerText = project.todos[i].name;
             item.dataset.index = i;
+
+            if(project.todos[i].dueDate) {
+                dueDateEl = document.createElement('p');
+                dueDateEl.classList.add('due-date-subtitle');
+                dueDateEl.innerText = `Due ${project.todos[i].dueDate}`;
+                item.appendChild(dueDateEl);
+            } 
+
             let checkButton = document.createElement('button');
             checkButton.addEventListener('click', (e) => {
                 let currentProject = Projects[document.querySelector('.selected').dataset.index];
@@ -175,7 +183,7 @@ let displayController = (function () {
                 let parentProject = task.parentProject;
                 parentIndex = parentProject.todos.indexOf(task);
                 currentProject.todos[index].completed = !(currentProject.todos[index].completed);
-                
+
                 if (important.todos.filter(todo => todo.completed == false).length != 0) {
                     document.querySelector('#important').lastElementChild.classList.remove('invisible');
                     document.querySelector('#important').lastElementChild.innerText =
@@ -227,7 +235,8 @@ let displayController = (function () {
                } else if (currentProj == Projects[1]) {
                     important.removeTask(important.todos.indexOf(currentTask));
                     document.querySelector('.todo-list').appendChild(displayController.updateTodos(currentProj));
-                    important.removeTask(myDay.todos.indexOf(currentTask));
+                } else {
+                    important.removeTask(important.todos.indexOf(currentTask));
                 }
         
                 if (important.todos.filter(todo => todo.completed == false).length !== 0) {
@@ -293,6 +302,9 @@ let displayController = (function () {
     }
 
     let updateDetails = function (e) {
+        let currentProject = Projects[document.querySelector('.selected').dataset.index];
+        let currentTask = currentProject.todos[e.target.dataset.index];
+
         if (document.querySelector('#detail-panel').classList.contains('invisible')) {
             document.querySelector('#detail-panel').classList.toggle('invisible');
         }
@@ -302,8 +314,16 @@ let displayController = (function () {
         } else {
             e.target.classList.add('selected-task');
         }
-        let currentProject = Projects[document.querySelector('.selected').dataset.index];
-        let currentTask = currentProject.todos[e.target.dataset.index];
+        if (currentTask.dueDate) {
+            document.querySelector('#date-input').value = currentTask.dueDate;
+            document.querySelector('.due-date-picker').classList.remove('unhidden');
+            document.querySelector('#due-date-card p').innerText = `Due ${currentTask.dueDate}`;
+        } else {
+            document.querySelector('#date-form').reset();
+            document.querySelector('.due-date-picker').classList.remove('unhidden');
+            document.querySelector('#due-date-card p').innerText = 'Add Due Date';
+        }
+   
         let detailName = document.querySelector('#detail-name');
         detailName.innerText = currentTask.name;
         detailName.dataset.index = e.target.dataset.index;
@@ -366,6 +386,42 @@ let addTodo = document.querySelector('.add-todo-btn');
 let delBtn = document.querySelector('#delete-btn');
 let collapseBtn = document.querySelector('#collapse-btn');
 let myDayBtn = document.querySelector('#my-day-card');
+let dueDateCard = document.querySelector('#due-date-card');
+let saveDateBtn = document.querySelector('#save-date-btn');
+
+dueDateCard.addEventListener('click', (e) => {
+    document.querySelector('.due-date-picker').classList.toggle('unhidden');
+    let currentProj = Projects[document.querySelector('.selected').dataset.index];
+    let currentTask = currentProj.todos[document.querySelector('#detail-name').dataset.index]
+    if(currentTask.dueDate){
+        document.querySelector('#date-input').value = currentTask.dueDate;
+    } else {
+        document.querySelector('#date-form').reset();
+    }
+});
+
+saveDateBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    let currentProj = Projects[document.querySelector('.selected').dataset.index];
+    let currentTask = currentProj.todos[document.querySelector('.selected-task').dataset.index]
+    currentTask.dueDate = document.querySelector('#date-input').value;
+    document.querySelector('#due-date-card').classList.add('has-due-date');
+    document.querySelector('#due-date-card p').innerText = `Due ${currentTask.dueDate}`;
+    if(!(Projects[2].todos.indexOf(currentTask) + 1)) {
+        Projects[2].todos.push(currentTask);
+    }
+    document.querySelector('.due-date-picker').classList.toggle('unhidden');
+    document.querySelector('.todo-list').appendChild(displayController.updateTodos(currentProj));
+    console.log(document.querySelectorAll('#task-list .list-container')[document.querySelector('#detail-name').dataset.index].querySelector('.todo-item').classList.add('selected-task'));
+
+    if(Projects[2].todos.filter(todo => todo.completed == false).length != 0) {
+        document.querySelector('#planned').lastElementChild.classList.remove('invisible');
+        document.querySelector('#planned').lastElementChild.innerText = Projects[2].todos.filter(todo => todo.completed == false).length;
+    } else {
+        document.querySelector('#planned').lastElementChild.classList.add('invisible');
+    }
+});
+
 
 addProj.addEventListener('click', (e) => {
     e.preventDefault();
@@ -428,9 +484,10 @@ delBtn.addEventListener('click', (e) => {
     parentProj.removeTask(parentProj.todos.indexOf(currentProj.todos[index]));
     parentProjEl = document.querySelectorAll('.project-container')[parentProjIndex];
 
-    if((myDay.todos.indexOf(currentProj[index])) || (important.todos.indexOf(currentProj[index]))) {
+    if((myDay.todos.indexOf(currentProj[index])) || (important.todos.indexOf(currentProj[index])) || (planned.todos.indexOf(currentProj[index]))) {
         myDay.removeTask(myDay.todos.indexOf(currentProj[index]));
         important.removeTask(important.todos.indexOf(currentProj[index]));
+        planned.removeTask(myDay.todos.indexOf(currentProj[index]));
     }
 
     if (parentProj.todos.filter(todo => todo.completed == false).length !== 0){
@@ -453,6 +510,15 @@ delBtn.addEventListener('click', (e) => {
         document.querySelector('#important').lastElementChild.innerText = important.todos.filter(todo => todo.completed == false).length;
         document.querySelector('#important').lastElementChild.classList.add('invisible');
     }
+
+    if (planned.todos.filter(todo => todo.completed == false).length !== 0) {
+        document.querySelector('#planned').lastElementChild.innerText = planned.todos.filter(todo => todo.completed == false).length;
+        document.querySelector('#planned').lastElementChild.classList.remove('invisible');
+    } else {
+        document.querySelector('#planned').lastElementChild.innerText = planned.todos.filter(todo => todo.completed == false).length;
+        document.querySelector('#planned').lastElementChild.classList.add('invisible');
+    }
+
 
     
     document.querySelector('.todo-list').appendChild(displayController.updateTodos(currentProj));
